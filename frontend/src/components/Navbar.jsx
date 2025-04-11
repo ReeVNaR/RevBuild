@@ -19,6 +19,9 @@ const Navbar = () => {
               <Link to="/resume-builder" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Resume Builder
               </Link>
+              <Link to="/portfolio-builder" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                Portfolio Builder
+              </Link>
               <Link to="/settings" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Settings
               </Link>
