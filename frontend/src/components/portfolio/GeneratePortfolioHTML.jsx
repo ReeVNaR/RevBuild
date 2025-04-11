@@ -31,6 +31,8 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
             --color-accent: ${theme.accent || '#60A5FA'};
             --color-text: ${theme.text || '#111827'};
             --color-background: ${theme.background || '#FFFFFF'};
+            --transition-duration: 0.3s;
+            --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
         }
         html { scroll-behavior: smooth; }
         body { overflow-x: hidden; }
@@ -73,6 +75,97 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+        
+        /* Professional scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Professional link transitions */
+        a {
+            transition: all var(--transition-duration) var(--ease-out);
+        }
+
+        /* Professional section transitions */
+        section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Professional card hover effects */
+        .hover-card {
+            transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+        }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Glass morphism effect for navbar */
+        .glass-nav {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* Professional text spacing */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-heading {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--color-primary);
+            border-radius: 2px;
+        }
+
+        .section-text {
+            max-width: 65ch;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .section-heading {
+                font-size: 2rem;
+            }
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -96,9 +189,9 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
 </head>
 <body class="bg-gray-100" style="color: var(--color-text); background: var(--color-background)">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" 
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-nav" 
          style="
-           background-color: ${portfolioData.navbar?.backgroundColor || '#FFFFFF'};
+           background-color: ${portfolioData.navbar?.backgroundColor ? portfolioData.navbar.backgroundColor.replace(')', ', 0.95)').replace('rgb', 'rgba') : 'rgba(255, 255, 255, 0.95)'};
            height: ${portfolioData.navbar?.height || 64}px;
            border: ${portfolioData.navbar?.borderStyle === 'full' ? `1px solid ${portfolioData.navbar?.borderColor}` : 'none'};
            border-bottom: ${portfolioData.navbar?.borderStyle === 'bottom' ? `1px solid ${portfolioData.navbar?.borderColor}` : ''};
@@ -109,25 +202,29 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
              '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
            };
          ">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-4 h-full">
             <div class="flex justify-between items-center h-full">
-                ${portfolioData.navbar?.logoType === 'image' ? 
-                  `<img src="${portfolioData.navbar.logoImage}" alt="Logo" class="h-8">` :
-                  `<a href="#" class="text-xl font-bold" style="color: ${portfolioData.navbar?.textColor}">${portfolioData.navbar?.logoText || portfolioData.name || 'Your Name'}</a>`
-                }
+                <!-- Logo -->
+                <div class="flex items-center h-full">
+                    ${portfolioData.navbar?.logoType === 'image' ? 
+                      `<img src="${portfolioData.navbar.logoImage}" alt="Logo" class="h-[calc(100%-1rem)] max-h-8 w-auto">` :
+                      `<a href="#" class="text-xl font-bold flex items-center h-full" style="color: ${portfolioData.navbar?.textColor}">${portfolioData.navbar?.logoText || portfolioData.name || 'Your Name'}</a>`
+                    }
+                </div>
                 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8">
+                <div class="hidden md:flex items-center h-full">
                     ${['About', 'Skills', 'Contact'].map(item => `
                       <a href="#${item.toLowerCase()}" 
-                         class="transition-all duration-300 ${getNavLinkEffectClass(portfolioData.navbar?.linkEffect)}"
+                         class="flex items-center h-full px-4 transition-all duration-300 ${getNavLinkEffectClass(portfolioData.navbar?.linkEffect)}"
                          style="color: ${portfolioData.navbar?.textColor}">
                         ${item}
                       </a>
                     `).join('')}
                 </div>
+
                 <!-- Mobile Menu Button -->
-                <button class="hamburger md:hidden focus:outline-none z-50" 
+                <button class="hamburger md:hidden flex items-center h-full focus:outline-none z-50" 
                     onclick="toggleMenu()">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -184,6 +281,25 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
                     break;
             }
             lastScroll = currentScroll;
+        });
+
+        // Add section reveal animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.25
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            sectionObserver.observe(section);
         });
     </script>
 
@@ -256,34 +372,35 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
     </header>
 
     <!-- About Section -->
-    <section id="about" style="
-        padding: ${sectionSizes.about.padding};
-        max-width: ${sectionSizes.about.maxWidth};
-        font-size: ${sectionSizes.about.fontSize};
-        background-color: ${sectionSizes.about.backgroundColor};">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold mb-8 text-center">About Me</h2>
-            <p class="text-gray-600 max-w-3xl mx-auto text-center leading-relaxed">
-                ${portfolioData.about || 'Tell us about yourself...'}
-            </p>
+    <section id="about" class="py-20" style="background-color: ${sectionSizes.about.backgroundColor};">
+        <div class="content-wrapper">
+            <div class="text-center">
+                <h2 class="section-heading">About Me</h2>
+                <div class="section-text prose prose-lg mx-auto">
+                    <p class="text-gray-600 leading-relaxed">
+                        ${portfolioData.about || 'Tell us about yourself...'}
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" style="
-        padding: ${sectionSizes.skills.padding};
-        background-color: ${sectionSizes.skills.backgroundColor};">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold mb-12 text-center">Skills</h2>
-            <div class="grid" style="
-                grid-template-columns: repeat(${sectionSizes.skills.columns}, 1fr);
-                gap: ${sectionSizes.skills.gap};">
+    <section id="skills" class="py-20" style="background-color: ${sectionSizes.skills.backgroundColor};">
+        <div class="content-wrapper">
+            <div class="text-center mb-12">
+                <h2 class="section-heading">Skills</h2>
+            </div>
+            <div class="grid gap-6 md:gap-8" style="
+                grid-template-columns: repeat(${sectionSizes.skills.columns}, 1fr);">
                 ${Object.entries(portfolioData.skills).map(([category, skills]) => `
-                    <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6 hover-card">
                         <h3 class="text-xl font-bold mb-4 capitalize">${category.replace('_', ' ')}</h3>
                         <div class="flex flex-wrap gap-2">
                             ${skills.map(skill => `
-                                <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">${skill}</span>
+                                <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+                                    ${skill}
+                                </span>
                             `).join('')}
                         </div>
                     </div>
@@ -293,25 +410,27 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" style="
-        padding: ${sectionSizes.contact.padding};
-        max-width: ${sectionSizes.contact.maxWidth};
-        font-size: ${sectionSizes.contact.fontSize};
-        background-color: ${sectionSizes.contact.backgroundColor};">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold mb-8">Get In Touch</h2>
-            <p class="text-gray-600 mb-8">
-                ${portfolioData.contact?.email || 'your.email@example.com'}
-            </p>
-            <div class="flex justify-center space-x-4">
-                ${portfolioData.contact?.github ? `
-                    <a href="${portfolioData.contact.github}" class="text-gray-600 hover:text-gray-800">
-                        <i class="fab fa-github text-2xl"></i>
-                    </a>` : ''}
-                ${portfolioData.contact?.linkedin ? `
-                    <a href="${portfolioData.contact.linkedin}" class="text-gray-600 hover:text-gray-800">
-                        <i class="fab fa-linkedin text-2xl"></i>
-                    </a>` : ''}
+    <section id="contact" class="py-20" style="background-color: ${sectionSizes.contact.backgroundColor};">
+        <div class="content-wrapper">
+            <div class="text-center">
+                <h2 class="section-heading">Get In Touch</h2>
+                <div class="section-text">
+                    <p class="text-gray-600 mb-8 text-lg">
+                        ${portfolioData.contact?.email || 'your.email@example.com'}
+                    </p>
+                    <div class="flex justify-center space-x-6">
+                        ${portfolioData.contact?.github ? `
+                            <a href="${portfolioData.contact.github}" 
+                               class="text-gray-600 hover:text-gray-800 transform hover:scale-110 transition-all">
+                                <i class="fab fa-github text-3xl"></i>
+                            </a>` : ''}
+                        ${portfolioData.contact?.linkedin ? `
+                            <a href="${portfolioData.contact.linkedin}" 
+                               class="text-gray-600 hover:text-gray-800 transform hover:scale-110 transition-all">
+                                <i class="fab fa-linkedin text-3xl"></i>
+                            </a>` : ''}
+                    </div>
+                </div>
             </div>
         </div>
     </section>

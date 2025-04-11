@@ -12,9 +12,13 @@ const NavbarSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, h
 
   return (
     <div className="space-y-6">
-      {/* Visual Settings */}
-      <div className="border rounded-lg p-4">
-        <h3 className="text-md font-medium mb-3">Visual Settings</h3>
+      <div className="border rounded-lg p-4 bg-white shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-md font-medium">Visual Settings</h3>
+          <div className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded">
+            Professional Mode
+          </div>
+        </div>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -56,6 +60,31 @@ const NavbarSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, h
                 className="w-full h-10 rounded"
               />
             </div>
+          </div>
+        </div>
+        <div className="mt-4">
+          <label className="text-sm text-gray-600 block mb-1">Glassmorphism Effect</label>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+              <input
+                type="radio"
+                value="enabled"
+                checked={portfolioData.navbar?.glassEffect === 'enabled'}
+                onChange={(e) => handleNavbarChange('glassEffect', e.target.value)}
+                className="mr-2"
+              />
+              <span>Enabled</span>
+            </label>
+            <label className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+              <input
+                type="radio"
+                value="disabled"
+                checked={portfolioData.navbar?.glassEffect !== 'enabled'}
+                onChange={(e) => handleNavbarChange('glassEffect', e.target.value)}
+                className="mr-2"
+              />
+              <span>Disabled</span>
+            </label>
           </div>
         </div>
       </div>
