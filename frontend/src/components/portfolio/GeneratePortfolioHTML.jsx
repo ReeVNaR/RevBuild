@@ -166,6 +166,20 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
                 font-size: 2rem;
             }
         }
+
+        /* Section Layout Options */
+        .layout-centered { max-width: 800px; margin: 0 auto; }
+        .layout-full { width: 100%; }
+        .layout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        
+        /* Section Background Effects */
+        .bg-pattern-dots { background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px; }
+        .bg-pattern-lines { background-image: linear-gradient(0deg, transparent 24%, rgba(0,0,0,.05) 25%, rgba(0,0,0,.05) 26%, transparent 27%); background-size: 20px 20px; }
+        .bg-gradient { background: linear-gradient(var(--gradient-angle, 45deg), var(--color-primary), var(--color-secondary)); }
+        
+        /* Content Animations */
+        .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -372,7 +386,13 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
     </header>
 
     <!-- About Section -->
-    <section id="about" class="py-20" style="background-color: ${sectionSizes.about.backgroundColor};">
+    <section id="about"
+      class="${sectionSizes.about.layout || 'layout-centered'} ${sectionSizes.about.animation || 'fade-up'}"
+      style="
+        padding: ${sectionSizes.about.padding};
+        background-color: ${sectionSizes.about.backgroundColor};
+        ${sectionSizes.about.backgroundEffect ? `background-image: ${sectionSizes.about.backgroundEffect};` : ''}
+      ">
         <div class="content-wrapper">
             <div class="text-center">
                 <h2 class="section-heading">About Me</h2>
@@ -386,7 +406,13 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="py-20" style="background-color: ${sectionSizes.skills.backgroundColor};">
+    <section id="skills" 
+      class="${sectionSizes.skills.layout || 'layout-centered'}"
+      style="
+        padding: ${sectionSizes.skills.padding};
+        background-color: ${sectionSizes.skills.backgroundColor};
+        ${sectionSizes.skills.backgroundEffect ? `background-image: ${sectionSizes.skills.backgroundEffect};` : ''}
+      ">
         <div class="content-wrapper">
             <div class="text-center mb-12">
                 <h2 class="section-heading">Skills</h2>

@@ -1,5 +1,24 @@
 import React from 'react';
 
+const layoutOptions = [
+  { value: 'layout-centered', label: 'Centered' },
+  { value: 'layout-full', label: 'Full Width' },
+  { value: 'layout-grid', label: 'Grid' }
+];
+
+const backgroundEffects = [
+  { value: '', label: 'None' },
+  { value: 'bg-pattern-dots', label: 'Dots Pattern' },
+  { value: 'bg-pattern-lines', label: 'Lines Pattern' },
+  { value: 'bg-gradient', label: 'Gradient' }
+];
+
+const animations = [
+  { value: 'fade-up', label: 'Fade Up' },
+  { value: 'slide-in', label: 'Slide In' },
+  { value: 'zoom-in', label: 'Zoom In' }
+];
+
 const AboutSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, handleChange }) => {
   return (
     <section>

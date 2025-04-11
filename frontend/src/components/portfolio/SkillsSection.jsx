@@ -1,5 +1,24 @@
 import React from 'react';
 
+const cardStyles = [
+  { value: 'minimal', label: 'Minimal' },
+  { value: 'elevated', label: 'Elevated' },
+  { value: 'bordered', label: 'Bordered' },
+  { value: 'glass', label: 'Glass Morphism' }
+];
+
+const skillLayouts = [
+  { value: 'grid', label: 'Grid' },
+  { value: 'masonry', label: 'Masonry' },
+  { value: 'carousel', label: 'Carousel' }
+];
+
+const badgeStyles = [
+  { value: 'pill', label: 'Pill' },
+  { value: 'tag', label: 'Tag' },
+  { value: 'chip', label: 'Chip' }
+];
+
 const SkillsSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, handleChange }) => {
   return (
     <section>
