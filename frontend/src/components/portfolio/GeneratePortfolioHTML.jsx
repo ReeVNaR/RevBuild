@@ -389,15 +389,15 @@ export const generatePortfolioHTML = ({ portfolioData, sectionSizes }) => {
     <section id="about"
       class="${sectionSizes.about.layout || 'layout-centered'} ${sectionSizes.about.animation || 'fade-up'}"
       style="
-        padding: ${sectionSizes.about.padding};
-        background-color: ${sectionSizes.about.backgroundColor};
+        padding: ${sectionSizes.about.padding || '4rem 2rem'};
+        background-color: ${sectionSizes.about.backgroundColor || '#ffffff'};
         ${sectionSizes.about.backgroundEffect ? `background-image: ${sectionSizes.about.backgroundEffect};` : ''}
       ">
         <div class="content-wrapper">
             <div class="text-center">
                 <h2 class="section-heading">About Me</h2>
                 <div class="section-text prose prose-lg mx-auto">
-                    <p class="text-gray-600 leading-relaxed">
+                    <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">
                         ${portfolioData.about || 'Tell us about yourself...'}
                     </p>
                 </div>
