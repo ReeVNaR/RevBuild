@@ -3,31 +3,38 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav className="bg-white shadow-md fixed w-full top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold text-blue-600">Resume Builder</span>
+    <nav className="bg-white shadow-md fixed w-full top-0 z-50 border-b border-gray-200">
+      <div className="px-8 mx-auto">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2">
+              <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
+              <span className="text-xl font-bold text-indigo-600">ResumeBuilder</span>
             </Link>
           </div>
-          <div className="hidden sm:flex sm:items-center">
-            <div className="ml-10 flex items-center space-x-4">
-              <Link to="/" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Dashboard
-              </Link>
-              <Link to="/resume-builder" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Resume Builder
-              </Link>
-              <Link to="/portfolio-builder" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Portfolio Builder
-              </Link>
-              <Link to="/settings" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Settings
-              </Link>
-              <Link to="/profile" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Profile
-              </Link>
+          
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <input
+                type="search"
+                placeholder="Search..."
+                className="w-64 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
+              />
+              <i className="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+            </div>
+            
+            <button className="relative text-gray-600 hover:text-gray-800">
+              <i className="fas fa-bell text-xl"></i>
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">2</span>
+            </button>
+            
+            <div className="flex items-center gap-3">
+              <img
+                src="https://ui-avatars.com/api/?name=User&background=random"
+                alt="Profile"
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="text-sm font-medium text-gray-700">John Doe</span>
             </div>
           </div>
         </div>
