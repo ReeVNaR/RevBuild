@@ -20,39 +20,11 @@ const animations = [
 ];
 
 const AboutSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, handleChange }) => {
-  const AboutPreview = () => (
-    <div className="mt-6 p-4 bg-white rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4">Live Preview</h3>
-      <div 
-        className={`p-6 rounded-lg ${sectionSizes.about.layout}`}
-        style={{
-          backgroundColor: sectionSizes.about.backgroundColor,
-          padding: sectionSizes.about.padding
-        }}
-      >
-        <div className={`max-w-3xl mx-auto ${sectionSizes.about.animation}`}>
-          <h2 className="text-2xl font-bold text-center mb-6">About Me</h2>
-          <div className="prose prose-lg mx-auto">
-            {portfolioData.about ? (
-              <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
-                {portfolioData.about}
-              </p>
-            ) : (
-              <p className="text-gray-400 italic text-center">
-                Add your content to see the preview...
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-800">About Section</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Layout Settings */}
         <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold text-gray-700">Layout Settings</h3>
@@ -170,9 +142,6 @@ const AboutSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, ha
           />
         </div>
       </div>
-
-      {/* Live Preview */}
-      <AboutPreview />
     </div>
   );
 };

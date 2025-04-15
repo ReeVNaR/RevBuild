@@ -1,75 +1,122 @@
 import React from 'react';
 
-const cardStyles = [
-  { value: 'minimal', label: 'Minimal' },
-  { value: 'elevated', label: 'Elevated' },
-  { value: 'bordered', label: 'Bordered' },
-  { value: 'glass', label: 'Glass Morphism' }
-];
+const SkillsSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, handleNestedChange }) => {
+  const categories = ['technical', 'soft', 'tools', 'languages'];
 
-const skillLayouts = [
-  { value: 'grid', label: 'Grid' },
-  { value: 'masonry', label: 'Masonry' },
-  { value: 'carousel', label: 'Carousel' }
-];
+  const handleSkillChange = (category, skillsString) => {
+    const skillsArray = skillsString.split(',').map(skill => skill.trim());
+    handleNestedChange(`skills.${category}`, skillsArray);
+  };
 
-const badgeStyles = [
-  { value: 'pill', label: 'Pill' },
-  { value: 'tag', label: 'Tag' },
-  { value: 'chip', label: 'Chip' }
-];
+  const SkillsPreview = () => (
+    <div className="mt-6 p-4 bg-white rounded-lg shadow-sm">
+      <h3 className="text-lg font-semibold text-gray-700 mb-4">Live Preview</h3>
+      <div 
+        className={`p-6 rounded-lg ${sectionSizes.skills.layout}`}
+        style={{
+          backgroundColor: sectionSizes.skills.backgroundColor,
+          padding: sectionSizes.skills.padding
+        }}
+      >
+        <h2 className="text-2xl font-bold text-center mb-6">Skills</h2>
+        <div className={`grid gap-6`} style={{ gridTemplateColumns: `repeat(${sectionSizes.skills.columns}, 1fr)` }}>
+          {categories.map(category => (
+            portfolioData.skills?.[category]?.length > 0 && (
+              <div key={category} className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                <h3 className="text-lg font-semibold mb-3 capitalize">{category}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {portfolioData.skills[category].map((skill, index) => (
+                    <span key={index} className="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
-const SkillsSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, handleChange }) => {
   return (
-    <section>
-      <h2 className="text-xl font-semibold mb-4">Skills Section</h2>
-      <div className="border rounded-lg p-4 mb-4">
-        <div className="grid grid-cols-1 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm text-gray-600">Background Color</label>
-            <input
-              type="color"
-              value={sectionSizes.skills.backgroundColor}
-              onChange={(e) => handleSectionSizeChange('skills', 'backgroundColor', e.target.value)}
-              className="w-full h-10 rounded"
-            />
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-800">Skills Section</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Layout Settings */}
+        <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-700">Layout Settings</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">
+                Number of Columns
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="4"
+                value={sectionSizes.skills.columns}
+                onChange={(e) => handleSectionSizeChange('skills', 'columns', e.target.value)}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">
+                Background Color
+              </label>
+              <input
+                type="color"
+                value={sectionSizes.skills.backgroundColor}
+                onChange={(e) => handleSectionSizeChange('skills', 'backgroundColor', e.target.value)}
+                className="w-full h-10"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">
+                Padding
+              </label>
+              <input
+                type="text"
+                value={sectionSizes.skills.padding}
+                onChange={(e) => handleSectionSizeChange('skills', 'padding', e.target.value)}
+                placeholder="e.g., 4rem 2rem"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Skills Input */}
+        <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-700">Skills</h3>
+          
+          <div className="space-y-4">
+            {categories.map(category => (
+              <div key={category}>
+                <label className="block text-sm font-medium text-gray-600 mb-2 capitalize">
+                  {category} Skills
+                </label>
+                <textarea
+                  value={portfolioData.skills?.[category]?.join(', ') || ''}
+                  onChange={(e) => handleSkillChange(category, e.target.value)}
+                  placeholder="Enter skills separated by commas"
+                  rows="2"
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      <div className="space-y-4">
-        {Object.entries(portfolioData.skills).map(([key, value]) => (
-          <div key={key}>
-            <label className="text-sm font-medium text-gray-600 capitalize">
-              {key.replace('_', ' ')}
-            </label>
-            <input
-              type="text"
-              name={`skills.${key}`}
-              value={value.join(', ')}
-              onChange={(e) => handleChange({
-                target: {
-                  name: `skills.${key}`,
-                  value: e.target.value.split(',').map(s => s.trim())
-                }
-              })}
-              placeholder={`e.g. ${getSkillsPlaceholder(key)}`}
-              className="w-full p-2 border rounded mt-1"
-            />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
 
-const getSkillsPlaceholder = (key) => {
-  const placeholders = {
-    technical: 'JavaScript, Python, React',
-    tools: 'Git, VS Code, Docker',
-    frameworks: 'Next.js, Express, TailwindCSS',
-    languages: 'English, Spanish'
-  };
-  return placeholders[key] || '';
+      {/* Live Preview */}
+      <SkillsPreview />
+    </div>
+  );
 };
 
 export default SkillsSection;
