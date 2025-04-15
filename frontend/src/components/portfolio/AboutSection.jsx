@@ -20,6 +20,12 @@ const animations = [
 ];
 
 const AboutSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, handleChange }) => {
+  // Remove preview section and update handleChange to be more responsive
+  const handleInputChange = (e) => {
+    handleChange(e);
+    // The parent component will handle the preview update
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-800">About Section</h2>
@@ -135,7 +141,7 @@ const AboutSection = ({ sectionSizes, portfolioData, handleSectionSizeChange, ha
           <textarea
             name="about"
             value={portfolioData.about || ''}
-            onChange={handleChange}
+            onChange={handleInputChange}
             placeholder="Write something about yourself..."
             rows="6"
             className="w-full p-3 border rounded-md focus:ring-2 focus:ring-indigo-500"

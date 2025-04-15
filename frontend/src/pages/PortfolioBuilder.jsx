@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AboutSection from '../components/portfolio/AboutSection';
 import SkillsSection from '../components/portfolio/SkillsSection';
 import ContactSection from '../components/portfolio/ContactSection';
 import HeroSection from '../components/portfolio/HeroSection';
 import { generatePortfolioHTML } from '../components/portfolio/GeneratePortfolioHTML';
+import PreviewSection from '../components/portfolio/PreviewSection';
 
 const PortfolioBuilder = () => {
   const [portfolioData, setPortfolioData] = useState({
@@ -56,6 +57,8 @@ const PortfolioBuilder = () => {
     }
   });
 
+  const previewIframeRef = React.useRef(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPortfolioData(prev => ({
@@ -84,13 +87,6 @@ const PortfolioBuilder = () => {
     }));
   };
 
-  const handlePreview = () => {
-    const html = generatePortfolioHTML({ portfolioData, sectionSizes });
-    const previewWindow = window.open('', '_blank');
-    previewWindow.document.write(html);
-    previewWindow.document.close();
-  };
-
   const handleDownload = () => {
     const html = generatePortfolioHTML({ portfolioData, sectionSizes });
     const blob = new Blob([html], { type: 'text/html' });
@@ -104,17 +100,30 @@ const PortfolioBuilder = () => {
     URL.revokeObjectURL(url);
   };
 
-  const generatePreview = () => {
-    return generatePortfolioHTML({ portfolioData, sectionSizes });
-  };
-
-  // Add effect to update preview when data changes
-  React.useEffect(() => {
-    const iframe = document.getElementById('preview-iframe');
-    if (iframe) {
-      iframe.srcdoc = generatePreview();
+  const updatePreview = useCallback(() => {
+    if (previewIframeRef.current) {
+      const htmlContent = generatePortfolioHTML({ portfolioData, sectionSizes });
+      const previewDocument = previewIframeRef.current.contentDocument;
+      
+      if (previewDocument) {
+        previewDocument.open();
+        previewDocument.write(htmlContent);
+        previewDocument.close();
+      }
     }
   }, [portfolioData, sectionSizes]);
+
+  const handlePreview = () => {
+    const html = generatePortfolioHTML({ portfolioData, sectionSizes });
+    const previewWindow = window.open('', '_blank');
+    previewWindow.document.write(html);
+    previewWindow.document.close();
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(updatePreview, 100);
+    return () => clearTimeout(timeoutId);
+  }, [updatePreview]);
 
   return (
     <div className="h-screen pt-16 bg-gray-50 flex overflow-hidden">
@@ -203,8 +212,7 @@ const PortfolioBuilder = () => {
           
           <div className="flex-1 p-4 overflow-auto">
             <iframe
-              id="preview-iframe"
-              srcDoc={generatePreview()}
+              ref={previewIframeRef}
               title="Portfolio Preview"
               className="w-full h-full border rounded-lg bg-white shadow-sm"
               sandbox="allow-scripts allow-same-origin"

@@ -1,42 +1,52 @@
 import React, { useEffect, useRef } from 'react';
 
-const PreviewSection = ({ viewportSettings, generateHTML, handleDownloadHTML }) => {
+const PreviewSection = ({ portfolioData, sectionSizes, generateHTML, handleDownloadHTML }) => {
   const iframeRef = useRef(null);
 
   useEffect(() => {
-    if (iframeRef.current) {
-      iframeRef.current.srcdoc = generateHTML();
-    }
-  }, [generateHTML]);
+    const updatePreview = () => {
+      if (iframeRef.current) {
+        iframeRef.current.srcdoc = generateHTML({ portfolioData, sectionSizes });
+      }
+    };
+
+    updatePreview();
+    // Add event listener for real-time updates
+    window.addEventListener('portfolio-update', updatePreview);
+    return () => window.removeEventListener('portfolio-update', updatePreview);
+  }, [portfolioData, sectionSizes, generateHTML]);
 
   const handlePreviewClick = () => {
-    const newWindow = window.open();
-    newWindow.document.write(generateHTML());
+    const newWindow = window.open('', '_blank');
+    newWindow.document.write(generateHTML({ portfolioData, sectionSizes }));
     newWindow.document.close();
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex justify-end items-center gap-2 p-2 border-b border-gray-200">
-        <button
-          onClick={handlePreviewClick}
-          className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-50 rounded hover:bg-gray-100 transition-colors"
-        >
-          Preview Full
-        </button>
-        <button
-          onClick={handleDownloadHTML}
-          className="px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
-        >
-          Download HTML
-        </button>
+    <div className="flex flex-col h-full bg-gray-50">
+      <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-700">Live Preview</h2>
+        <div className="space-x-4">
+          <button
+            onClick={handlePreviewClick}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm transition-colors"
+          >
+            Preview Full
+          </button>
+          <button
+            onClick={handleDownloadHTML}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm transition-colors"
+          >
+            Download HTML
+          </button>
+        </div>
       </div>
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 p-4">
         <iframe
           ref={iframeRef}
-          title="Preview"
-          className="w-full h-full border-none"
-          sandbox="allow-scripts"
+          title="Portfolio Preview"
+          className="w-full h-full border rounded-lg bg-white shadow-sm"
+          sandbox="allow-scripts allow-same-origin"
         />
       </div>
     </div>
