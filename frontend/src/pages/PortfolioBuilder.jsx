@@ -59,6 +59,25 @@ const PortfolioBuilder = () => {
 
   const previewIframeRef = React.useRef(null);
 
+  const generatePreview = useCallback(() => {
+    return generatePortfolioHTML({ portfolioData, sectionSizes });
+  }, [portfolioData, sectionSizes]);
+
+  useEffect(() => {
+    const updatePreview = () => {
+      if (previewIframeRef.current) {
+        const iframe = previewIframeRef.current;
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(generatePreview());
+        iframeDoc.close();
+      }
+    };
+
+    const timeoutId = setTimeout(updatePreview, 100);
+    return () => clearTimeout(timeoutId);
+  }, [generatePreview]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPortfolioData(prev => ({
@@ -88,7 +107,7 @@ const PortfolioBuilder = () => {
   };
 
   const handleDownload = () => {
-    const html = generatePortfolioHTML({ portfolioData, sectionSizes });
+    const html = generatePreview();
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -100,30 +119,12 @@ const PortfolioBuilder = () => {
     URL.revokeObjectURL(url);
   };
 
-  const updatePreview = useCallback(() => {
-    if (previewIframeRef.current) {
-      const htmlContent = generatePortfolioHTML({ portfolioData, sectionSizes });
-      const previewDocument = previewIframeRef.current.contentDocument;
-      
-      if (previewDocument) {
-        previewDocument.open();
-        previewDocument.write(htmlContent);
-        previewDocument.close();
-      }
-    }
-  }, [portfolioData, sectionSizes]);
-
   const handlePreview = () => {
-    const html = generatePortfolioHTML({ portfolioData, sectionSizes });
+    const html = generatePreview();
     const previewWindow = window.open('', '_blank');
     previewWindow.document.write(html);
     previewWindow.document.close();
   };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(updatePreview, 100);
-    return () => clearTimeout(timeoutId);
-  }, [updatePreview]);
 
   return (
     <div className="h-screen pt-16 bg-gray-50 flex overflow-hidden">
@@ -137,15 +138,16 @@ const PortfolioBuilder = () => {
           <div className="space-y-8">
             <div className="space-y-1">
               <h3 className="text-sm font-medium text-gray-500">Quick Navigation</h3>
-              <div className="flex gap-2">
-                <button onClick={() => document.getElementById('hero-section').scrollIntoView({ behavior: 'smooth' })} 
-                  className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded">Hero</button>
-                <button onClick={() => document.getElementById('about-section').scrollIntoView({ behavior: 'smooth' })}
-                  className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded">About</button>
-                <button onClick={() => document.getElementById('skills-section').scrollIntoView({ behavior: 'smooth' })}
-                  className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded">Skills</button>
-                <button onClick={() => document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' })}
-                  className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded">Contact</button>
+              <div className="flex gap-2 flex-wrap">
+                {['Hero', 'About', 'Skills', 'Contact'].map(section => (
+                  <button
+                    key={section}
+                    onClick={() => document.getElementById(`${section.toLowerCase()}-section`).scrollIntoView({ behavior: 'smooth' })}
+                    className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                  >
+                    {section}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -197,13 +199,13 @@ const PortfolioBuilder = () => {
             <div className="space-x-4">
               <button
                 onClick={handlePreview}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm transition-colors"
               >
                 Preview Full
               </button>
               <button
                 onClick={handleDownload}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm transition-colors"
               >
                 Download HTML
               </button>
