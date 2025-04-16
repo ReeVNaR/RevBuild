@@ -57,27 +57,12 @@ const PortfolioBuilder = () => {
     }
   });
 
-  const previewIframeRef = React.useRef(null);
-
+  // Add memo for generating preview HTML
   const generatePreview = useCallback(() => {
     return generatePortfolioHTML({ portfolioData, sectionSizes });
   }, [portfolioData, sectionSizes]);
 
-  useEffect(() => {
-    const updatePreview = () => {
-      if (previewIframeRef.current) {
-        const iframe = previewIframeRef.current;
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.open();
-        iframeDoc.write(generatePreview());
-        iframeDoc.close();
-      }
-    };
-
-    const timeoutId = setTimeout(updatePreview, 100);
-    return () => clearTimeout(timeoutId);
-  }, [generatePreview]);
-
+  // Add immediate update handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPortfolioData(prev => ({
@@ -106,6 +91,21 @@ const PortfolioBuilder = () => {
     }));
   };
 
+  // Update preview whenever data changes
+  useEffect(() => {
+    const updatePreview = () => {
+      const iframe = document.getElementById('preview-iframe');
+      if (iframe) {
+        const previewDocument = iframe.contentDocument || iframe.contentWindow.document;
+        previewDocument.open();
+        previewDocument.write(generatePreview());
+        previewDocument.close();
+      }
+    };
+
+    updatePreview();
+  }, [generatePreview]);
+
   const handleDownload = () => {
     const html = generatePreview();
     const blob = new Blob([html], { type: 'text/html' });
@@ -113,50 +113,32 @@ const PortfolioBuilder = () => {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'portfolio.html';
-    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
-  const handlePreview = () => {
+  const handleFullPreview = () => {
     const html = generatePreview();
-    const previewWindow = window.open('', '_blank');
+    const previewWindow = window.open();
     previewWindow.document.write(html);
     previewWindow.document.close();
   };
 
   return (
     <div className="h-screen pt-16 bg-gray-50 flex overflow-hidden">
-      {/* Left Sidebar - Editor */}
+      {/* Left Panel - Editor */}
       <div className="w-[30%] border-r border-gray-200 bg-white overflow-y-auto">
-        <div className="p-4 space-y-6">
-          <div className="flex justify-between items-center">
+        <div className="p-6 space-y-8">
+          <div className="sticky top-0 bg-gray-50 z-10 pb-4">
             <h1 className="text-2xl font-bold text-gray-900">Portfolio Builder</h1>
           </div>
-          
-          <div className="space-y-8">
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium text-gray-500">Quick Navigation</h3>
-              <div className="flex gap-2 flex-wrap">
-                {['Hero', 'About', 'Skills', 'Contact'].map(section => (
-                  <button
-                    key={section}
-                    onClick={() => document.getElementById(`${section.toLowerCase()}-section`).scrollIntoView({ behavior: 'smooth' })}
-                    className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors"
-                  >
-                    {section}
-                  </button>
-                ))}
-              </div>
-            </div>
 
+          <div id="sections-container" className="space-y-8">
             <div id="hero-section">
               <HeroSection
                 sectionSizes={sectionSizes}
                 portfolioData={portfolioData}
                 handleSectionSizeChange={handleSectionSizeChange}
-                handleChange={handleChange}
                 handleNestedChange={handleNestedChange}
               />
             </div>
@@ -198,14 +180,14 @@ const PortfolioBuilder = () => {
             <h2 className="text-lg font-semibold text-gray-700">Live Preview</h2>
             <div className="space-x-4">
               <button
-                onClick={handlePreview}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm transition-colors"
+                onClick={handleFullPreview}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm"
               >
                 Preview Full
               </button>
               <button
                 onClick={handleDownload}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm transition-colors"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
               >
                 Download HTML
               </button>
@@ -214,7 +196,7 @@ const PortfolioBuilder = () => {
           
           <div className="flex-1 p-4 overflow-auto">
             <iframe
-              ref={previewIframeRef}
+              id="preview-iframe"
               title="Portfolio Preview"
               className="w-full h-full border rounded-lg bg-white shadow-sm"
               sandbox="allow-scripts allow-same-origin"
