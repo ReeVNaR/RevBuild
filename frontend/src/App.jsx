@@ -10,13 +10,14 @@ function NavLink({ to, children }) {
   return (
     <Link
       to={to}
-      className={`px-6 py-3 rounded-lg transition-all duration-200 font-medium text-base ${
-        isActive
-          ? 'text-white bg-white/10'
-          : 'text-gray-300 hover:text-white hover:bg-white/5'
-      }`}
+      className={`relative px-4 py-2 rounded-md transition-all duration-200 font-medium text-base 
+        hover:text-white group ${isActive ? 'text-white' : 'text-gray-300'}`}
     >
       {children}
+      <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-white transform origin-left 
+        transition-transform duration-200 ${isActive ? 'scale-x-100' : 'scale-x-0'} 
+        group-hover:scale-x-100`}>
+      </span>
     </Link>
   );
 }
@@ -24,13 +25,13 @@ function NavLink({ to, children }) {
 export default function App() {
   return (
     <Router>
-      <nav className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 shadow-lg h-16">
-        <div className="container mx-auto h-full px-8">
+      <nav className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 shadow-lg">
+        <div className="container mx-auto h-16 px-8">
           <div className="flex items-center justify-between h-full">
-            <div className="text-2xl font-bold text-white">
+            <Link to="/" className="text-2xl font-bold text-white hover:opacity-90 transition-opacity">
               ReVBuilder
-            </div>
-            <div className="flex items-center space-x-4">
+            </Link>
+            <div className="flex items-center gap-2">
               <NavLink to="/">Home</NavLink>
               <NavLink to="/resume">Resume</NavLink>
               <NavLink to="/portfolio">Portfolio</NavLink>
