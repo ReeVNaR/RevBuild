@@ -1,109 +1,116 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import React from 'react';
 
-const PrintableResume = React.forwardRef((props, ref) => (
+const PrintableResume = React.forwardRef(({ resumeData }, ref) => (
   <div 
-    ref={ref} 
-    className="bg-white p-[2cm]"
+    ref={ref}
+    className="bg-white"
     style={{
-      width: '21cm',
-      minHeight: '29.7cm',
+      width: '210mm',
+      minHeight: '297mm',
+      padding: '15mm',
       margin: '0 auto',
+      boxSizing: 'border-box',
     }}
   >
-    <div className="text-center mb-8">
-      <h1 className="text-3xl font-bold mb-1">{props.resumeData.fullName || ' '}</h1>
-      <p className="text-lg mb-2 text-gray-700">{props.resumeData.title || ' '}</p>
-      <p className="text-sm text-gray-600 mb-1">
-        {props.resumeData.email || ' '} | {props.resumeData.phone || ' '}
-      </p>
-      <p className="text-sm text-gray-600 flex justify-center gap-4">
-        <span>{props.resumeData.links.github || ' '}</span> | <span>{props.resumeData.links.linkedin || ' '}</span> | <span>{props.resumeData.links.portfolio || ' '}</span>
-      </p>
-    </div>
+    <div className="space-y-3">
+      {/* Header */}
+      <div className="text-center mb-3">
+        <h1 className="text-2xl font-bold mb-1">{resumeData.fullName || ' '}</h1>
+        <p className="text-lg mb-1 text-gray-700">{resumeData.title || ' '}</p>
+        <p className="text-base text-gray-600">{resumeData.email || ' '} | {resumeData.phone || ' '}</p>
+        <div className="text-base text-gray-600 flex justify-center gap-2">
+          <span>{resumeData.links.github || ' '}</span> | <span>{resumeData.links.linkedin || ' '}</span> | <span>{resumeData.links.portfolio || ' '}</span>
+        </div>
+      </div>
 
-    {/* Always show sections even if empty */}
-    <div className="mb-6">
-      <h2 className="text-lg font-semibold border-b border-gray-300 mb-3">EDUCATION</h2>
-      {props.resumeData.education.map((edu, index) => (
-        <div key={index} className="mb-3">
-          <div className="flex justify-between items-start">
-            <div>
-              {edu.school && <p className="font-medium">{edu.school}</p>}
-              {edu.degree && <p className="text-sm">{edu.degree}</p>}
-              {edu.percentage && <p className="text-sm">Percentage: {edu.percentage}</p>}
-            </div>
-            <div className="text-right">
-              {edu.location && <p className="text-sm">{edu.location}</p>}
-              {edu.year && <p className="text-sm">{edu.year}</p>}
+      {/* Education */}
+      <div className="mb-3">
+        <h2 className="text-lg font-bold border-b border-gray-300 mb-2">EDUCATION</h2>
+        {resumeData.education.map((edu, index) => (
+          <div key={index} className="mb-2">
+            <div className="flex justify-between items-start text-sm">
+              <div>
+                <p className="font-semibold">{edu.school}</p>
+                <p>{edu.degree}</p>
+              </div>
+              <div className="text-right">
+                <p>{edu.location}</p>
+                <p>{edu.year}</p>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
 
-    <div className="mb-6">
-      <h2 className="text-lg font-semibold border-b border-gray-300 mb-3">EXPERIENCE</h2>
-      {props.resumeData.experience.map((exp, index) => (
-        <div key={index} className="mb-3">
-          <div className="flex justify-between items-start">
-            <div>
-              {exp.role && <p className="font-medium">{exp.role}</p>}
-              {exp.company && <p className="text-sm">{exp.company}</p>}
-              {exp.description && <p className="text-sm text-gray-600 mt-1">{exp.description}</p>}
-            </div>
-            <div className="text-right">
-              {exp.location && <p className="text-sm">{exp.location}</p>}
-              {exp.duration && <p className="text-sm">{exp.duration}</p>}
+      {/* Experience */}
+      <div className="mb-3">
+        <h2 className="text-lg font-bold border-b border-gray-300 mb-2">EXPERIENCE</h2>
+        {resumeData.experience.map((exp, index) => (
+          <div key={index} className="mb-1.5">
+            <div className="flex justify-between items-start">
+              <div className="text-sm">
+                <p className="font-semibold">{exp.role}</p>
+                <p>{exp.company}</p>
+                <p className="text-gray-600 mt-0.5 leading-tight">{exp.description}</p>
+              </div>
+              <div className="text-right text-sm">
+                <p>{exp.location}</p>
+                <p>{exp.duration}</p>
+              </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Skills */}
+      <div className="mb-3">
+        <h2 className="text-lg font-bold border-b border-gray-300 mb-2">SKILLS</h2>
+        <div className="grid gap-1 text-sm">
+          {resumeData.skills.programmingLanguages && (
+            <p><span className="font-semibold">Programming:</span> {resumeData.skills.programmingLanguages}</p>
+          )}
+          {resumeData.skills.librariesFrameworks && (
+            <p><span className="font-semibold">Libraries/Frameworks:</span> {resumeData.skills.librariesFrameworks}</p>
+          )}
+          {resumeData.skills.toolsPlatforms && (
+            <p><span className="font-semibold">Tools:</span> {resumeData.skills.toolsPlatforms}</p>
+          )}
+          {resumeData.skills.databases && (
+            <p><span className="font-semibold">Databases:</span> {resumeData.skills.databases}</p>
+          )}
         </div>
-      ))}
-    </div>
-    <div className="mb-6">
-      <h2 className="text-lg font-semibold border-b border-gray-300 mb-3">SKILLS</h2>
-      <div className="grid gap-2">
-        {props.resumeData.skills.programmingLanguages && (
-          <p><span className="font-medium">Programming Languages:</span> {props.resumeData.skills.programmingLanguages}</p>
-        )}
-        {props.resumeData.skills.librariesFrameworks && (
-          <p><span className="font-medium">Libraries/Frameworks:</span> {props.resumeData.skills.librariesFrameworks}</p>
-        )}
-        {props.resumeData.skills.toolsPlatforms && (
-          <p><span className="font-medium">Tools/Platforms:</span> {props.resumeData.skills.toolsPlatforms}</p>
-        )}
-        {props.resumeData.skills.databases && (
-          <p><span className="font-medium">Databases:</span> {props.resumeData.skills.databases}</p>
+      </div>
+
+      {/* Projects */}
+      <div className="mb-3">
+        <h2 className="text-lg font-bold border-b border-gray-300 mb-2">PROJECTS</h2>
+        <div className="grid gap-2">
+          {resumeData.projects.map((project, index) => (
+            <div key={index} className="text-sm">
+              <p className="font-semibold flex justify-between">
+                {project.name}
+                {project.link && <a href={project.link} className="text-blue-600">Link</a>}
+              </p>
+              <p className="text-gray-600">Tech: {project.techStack}</p>
+              <p className="leading-snug">{project.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Certifications */}
+      <div className="mb-3">
+        <h2 className="text-lg font-bold border-b border-gray-300 mb-2">CERTIFICATIONS</h2>
+        {resumeData.certifications.length > 0 && (
+          <div className="grid grid-cols-2 gap-x-4 text-sm">
+            {resumeData.certifications.map((cert, index) => (
+              <p key={index} className="mb-1">• {cert}</p>
+            ))}
+          </div>
         )}
       </div>
-    </div>
-    <div className="mb-6">
-      <h2 className="text-lg font-semibold border-b border-gray-300 mb-3">PROJECTS</h2>
-      {props.resumeData.projects.map((project, index) => (
-        <div key={index} className="mb-3">
-          <div>
-            {project.name && (
-              <p className="font-medium">
-                {project.name}
-                {project.link && <a href={project.link} className="text-sm text-blue-600 ml-2">| Link</a>}
-              </p>
-            )}
-            {project.techStack && <p className="text-sm text-gray-600">Tech Stack: {project.techStack}</p>}
-            {project.description && <p className="text-sm">{project.description}</p>}
-          </div>
-        </div>
-      ))}
-    </div>
-    <div className="mb-6">
-      <h2 className="text-lg font-semibold border-b border-gray-300 mb-3">CERTIFICATIONS</h2>
-      {props.resumeData.certifications.length > 0 && (
-        <ul className="list-disc list-inside">
-          {props.resumeData.certifications.map((cert, index) => (
-            <li key={index} className="text-sm mb-1">{cert}</li>
-          ))}
-        </ul>
-      )}
     </div>
   </div>
 ));
@@ -111,11 +118,59 @@ const PrintableResume = React.forwardRef((props, ref) => (
 export default function Resume() {
   const componentRef = useRef();
 
+  const [resumeData, setResumeData] = useState({
+    fullName: 'John Doe',
+    title: 'Full Stack Developer',
+    email: 'john.doe@example.com',
+    phone: '+1 234-567-8900',
+    links: {
+      github: 'github.com/johndoe',
+      linkedin: 'linkedin.com/in/johndoe',
+      portfolio: 'johndoe.dev'
+    },
+    education: [
+      {
+        school: 'University of Technology',
+        degree: 'Bachelor of Science in Computer Science',
+        percentage: '85%',
+        location: 'New York, USA',
+        year: '2018-2022'
+      }
+    ],
+    experience: [
+      {
+        company: 'Tech Solutions Inc.',
+        role: 'Software Developer',
+        duration: 'Jan 2022 - Present',
+        location: 'San Francisco, CA',
+        description: 'Developed and maintained full-stack web applications using React and Node.js. Implemented responsive designs and RESTful APIs.'
+      }
+    ],
+    skills: {
+      programmingLanguages: 'JavaScript, Python, Java, C++',
+      librariesFrameworks: 'React, Node.js, Express, Django',
+      toolsPlatforms: 'Git, Docker, AWS, Linux',
+      databases: 'MongoDB, PostgreSQL, MySQL'
+    },
+    projects: [
+      {
+        name: 'E-commerce Platform',
+        link: 'github.com/johndoe/ecommerce',
+        techStack: 'React, Node.js, MongoDB, Express',
+        description: 'Built a full-stack e-commerce platform with features like user authentication, product management, and payment integration.'
+      }
+    ],
+    certifications: ['AWS Certified Developer', 'MongoDB Certified Developer']
+  });
+
+  const printRef = useRef(null);
+
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef: printRef,
+    documentTitle: `${resumeData.fullName || 'Resume'}_${new Date().toLocaleDateString()}`,
     pageStyle: `
       @page {
-        size: 21cm 29.7cm;
+        size: A4;
         margin: 0;
       }
       @media print {
@@ -127,34 +182,6 @@ export default function Resume() {
         }
       }
     `,
-  });
-
-  const [resumeData, setResumeData] = useState({
-    fullName: '',
-    title: '',
-    email: '',
-    phone: '',
-    links: {
-      github: '',
-      linkedin: '',
-      portfolio: '',
-    },
-    education: [
-      { school: '', degree: '', percentage: '', location: '', year: '' }
-    ],
-    experience: [
-      { company: '', role: '', duration: '', location: '', description: '' }
-    ],
-    skills: {
-      programmingLanguages: '',
-      librariesFrameworks: '',
-      toolsPlatforms: '',
-      databases: ''
-    },
-    projects: [
-      { name: '', link: '', techStack: '', description: '' }
-    ],
-    certifications: []
   });
 
   const [collapsedSections, setCollapsedSections] = useState({
@@ -307,8 +334,7 @@ export default function Resume() {
           Download PDF
         </button>
       </div>
-      
-      <div className="flex gap-4">
+      <div className="flex gap-4 h-[calc(100%-3rem)]">
         {/* Left Form Section */}
         <div className="w-[30%] bg-white shadow-lg p-4 rounded-lg overflow-y-auto">
           <form className="space-y-6">
@@ -736,9 +762,9 @@ export default function Resume() {
         </div>
 
         {/* Right Preview Section */}
-        <div className="w-[70%] bg-white shadow-lg rounded-lg overflow-y-auto">
-          <div className="w-[21cm] mx-auto my-8">
-            <PrintableResume ref={componentRef} resumeData={resumeData} />
+        <div className="w-[70%] bg-gray-100 shadow-lg rounded-lg overflow-y-auto p-8">
+          <div className="shadow-lg bg-white">
+            <PrintableResume ref={printRef} resumeData={resumeData} />
           </div>
         </div>
       </div>
