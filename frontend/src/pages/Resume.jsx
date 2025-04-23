@@ -323,8 +323,8 @@ export default function Resume() {
   };
 
   return (
-    <div className="h-[calc(100vh-48px)] container mx-auto px-2 overflow-hidden">
-      <div className="flex items-center justify-between mb-3 pt-2">
+    <div className="h-[calc(100vh-64px)] container mx-auto px-2 overflow-hidden">
+      <div className="flex items-center justify-between mb-2 pt-1">
         <h1 className="text-xl font-semibold text-gray-700">Resume Builder</h1>
         <button
           onClick={handlePrint}
@@ -342,7 +342,7 @@ export default function Resume() {
           Download PDF
         </button>
       </div>
-      <div className="flex gap-2 h-[calc(100%-3.5rem)]">
+      <div className="flex gap-2 h-[calc(100%-2.5rem)]">
         {/* Left Form Section */}
         <div className="w-[30%] bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 shadow-xl p-3 rounded-lg overflow-y-auto">
           <form className="space-y-4 text-gray-100">
@@ -772,10 +772,12 @@ export default function Resume() {
 
         {/* Right Preview Section */}
         <div className="w-[70%] bg-gray-200 shadow-lg rounded-lg overflow-hidden">
-          <div className="h-full overflow-y-auto p-6 bg-gray-300">
-            <div className="shadow-2xl mx-auto transform scale-[0.85] origin-top">
-              <div className="w-[210mm] min-h-[297mm] mx-auto bg-white shadow-lg">
-                <PrintableResume ref={printRef} resumeData={resumeData} />
+          <div className="h-full overflow-y-auto p-2 bg-gray-300">
+            <div className="flex items-center justify-center min-h-full">
+              <div className="shadow-2xl transform scale-[0.52] origin-top">
+                <div className="w-[210mm] min-h-[297mm] bg-white shadow-lg">
+                  <PrintableResume ref={printRef} resumeData={resumeData} />
+                </div>
               </div>
             </div>
           </div>
